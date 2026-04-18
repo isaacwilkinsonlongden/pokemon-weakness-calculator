@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func commandHelp() error {
+func commandHelp(cfg *config, words ...string) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokemon weakness calculator!")
 	fmt.Println("Usage:")

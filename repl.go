@@ -5,10 +5,16 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/isaacwilkinsonlongden/pokemon-weakness-calculator/internal/pokeapi"
 )
 
-func startRepl() {
-	err := commandHelp()
+type config struct {
+	pokeapiClient pokeapi.Client
+}
+
+func startRepl(cfg *config) {
+	err := commandHelp(cfg, "")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -27,14 +33,16 @@ func startRepl() {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback()
+			err := command.callback(cfg, words...)
 			if err != nil {
 				fmt.Println(err)
 			}
 			continue
-		} else {
-			fmt.Println("Unknown command")
-			continue
+		}
+
+		err = commandPokemon(cfg, commandName)
+		if err != nil {
+			fmt.Println(err)
 		}
 	}
 }
@@ -48,7 +56,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -62,6 +70,11 @@ func getCommands() map[string]cliCommand {
 			name:        "exit",
 			description: "Exit the program",
 			callback:    commandExit,
+		},
+		"pokemon": {
+			name:        "pokemon",
+			description: "Get pokemon weakness",
+			callback:    commandPokemon,
 		},
 	}
 }
