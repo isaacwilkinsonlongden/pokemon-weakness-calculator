@@ -75,8 +75,13 @@ func getCommands() map[string]cliCommand {
 		},
 		"pokemon": {
 			name:        "pokemon",
-			description: "Get pokemon weakness",
+			description: "Get pokemon weaknesses",
 			callback:    commandPokemon,
+		},
+		"gen": {
+			name:        "gen",
+			description: "Set or view the current generation (e.g. 'gen 3')",
+			callback:    commandGen,
 		},
 	}
 }
